@@ -17,7 +17,7 @@ class RouteRequestSerializer(serializers.Serializer):
 
 def validate_location(location_str):
     try:
-        lat, long = map(float, location_str.split(','))
+        long, lat = map(float, location_str.split(','))
     except ValueError:
         raise serializers.ValidationError("Invalid location format. Expected 'lat,long'")
 
@@ -25,4 +25,4 @@ def validate_location(location_str):
     if not (24.396308 <= lat <= 49.384358 and -125.0 <= long <= -66.93457):
         raise serializers.ValidationError("Location must be inside USA")
 
-    return location_str
+    return {"long": long, "lat": lat}

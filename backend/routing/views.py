@@ -22,6 +22,7 @@ def get_route(request):
 
     try:
         route = get_route_from_mapbox(coordinates)
-        return Response(route)
+        processed_route = process_route(route)
+        return Response(processed_route)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
