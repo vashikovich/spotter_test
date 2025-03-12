@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import RouteRequestSerializer
+from .services.mapbox import get_route_from_mapbox
 
 @api_view(['GET'])
 def get_route(request):
@@ -16,7 +17,8 @@ def get_route(request):
     dropoff = data['dropoff']
     used_hours = data['usedHrs']
 
-    # Process the route logic here
-    # ...existing code...
-
-    return Response({"message": "Route processed successfully"})
+    try:
+        route = get_route_from_mapbox(current, pickup, dropoff)
+        return Response({"route": route})
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
