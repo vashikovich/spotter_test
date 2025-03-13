@@ -29,7 +29,7 @@ export function JobSelection() {
   if (!jobs.length) return <p>Loading...</p>;
 
   return (
-    <div className="flex max-h-screen gap-4">
+    <div className="flex h-[90vh] gap-4">
       <div className="w-3/5">
         <Map markers={markers} />
       </div>

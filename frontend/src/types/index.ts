@@ -37,6 +37,7 @@ export interface Routing {
   route: Coordinate[];
   stops: Stop[];
   timeline: TimeSegment[];
+  limitWarning: boolean;
 }
 
 export interface Marker {

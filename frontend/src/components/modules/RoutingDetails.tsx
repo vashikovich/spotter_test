@@ -67,10 +67,10 @@ export function RoutingDetails() {
   return (
     <div className="flex flex-col w-full gap-4">
       {/* Callout Bar */}
-      <div className="w-full bg-blue-100 p-4 rounded-lg">
-        <p className="text-blue-800">
-          Route details for delivery from {latlong(routingDetails.stops[0])} to{" "}
-          {latlong(routingDetails.stops[routingDetails.stops.length - 1])}
+      <div className="w-full bg-yellow-100 p-4 rounded-lg">
+        <p>
+          Total on-duty duration for this trip may exceed 70 hours/8 days limit. Please check
+          your past logs to avoid violation.
         </p>
       </div>
 
