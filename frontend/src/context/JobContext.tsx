@@ -35,7 +35,7 @@ export const JobProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [usedHrs, setUsedHrs] = useState<number>(0);
 
   useEffect(() => {
-    const generatedJobs = Array.from({ length: 5 }, generateRandomJobs);
+    const generatedJobs = Array.from({ length: 10 }, generateRandomJobs);
     setJobs(generatedJobs);
   }, []);
 

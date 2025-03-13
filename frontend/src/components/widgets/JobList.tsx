@@ -6,7 +6,7 @@ export function JobList() {
   const { selectedJob, selectJob, jobs } = useContext(JobContext);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col flex-1 gap-4 overflow-y-auto">
       {jobs.map((job) => (
         <JobCard
           key={job.id}
