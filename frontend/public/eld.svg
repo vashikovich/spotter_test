@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="260mm"
+   width="275mm"
    height="50mm"
-   viewBox="0 0 260 50"
+   viewBox="0 0 275 50"
    version="1.1"
    id="svg5"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.0759173"
-     inkscape:cx="410.34751"
-     inkscape:cy="110.60329"
+     inkscape:cx="447.52509"
+     inkscape:cy="13.941592"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="915"
@@ -1605,5 +1605,21 @@
          style="fill:#000000;stroke:none;stroke-width:0.25"
          x="236.28703"
          y="59.429363">23</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.83809px;font-family:Lato;-inkscape-font-specification:Lato;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.25"
+       x="255.78033"
+       y="54.522964"
+       id="text3059"><tspan
+         sodipodi:role="line"
+         id="tspan3057"
+         style="text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.25"
+         x="255.78033"
+         y="54.522964">Total</tspan><tspan
+         sodipodi:role="line"
+         style="text-align:center;text-anchor:middle;fill:#000000;stroke-width:0.25"
+         x="255.78033"
+         y="59.320576"
+         id="tspan3061">Hours</tspan></text>
   </g>
 </svg>

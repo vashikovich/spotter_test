@@ -5,8 +5,9 @@ interface ELDSheetProps {
   date: string;
 }
 
-const calcLeft = (time: number) => ((2 + time / 3600) / 26) * 100 + "%";
-const calcRight = (time: number) => ((26 - 2 - time / 3600) / 26) * 100 + "%";
+const calcLeft = (time: number) => ((2 + time / 3600) / 27.5) * 100 + "%";
+const calcRight = (time: number) =>
+  ((27.5 - 2 - time / 3600) / 27.5) * 100 + "%";
 const calcTop = (type: TimeSegmentType) => {
   switch (type) {
     case "off_duty":
@@ -71,6 +72,68 @@ const drawLines = (timeline: TimeSegment[]) => {
   return lines;
 };
 
+const totalHours = (timeline: TimeSegment[]) => {
+  const offDuty = timeline
+    .filter((ts) => ts.type === "off_duty")
+    .reduce((acc, ts) => acc + ts.end - ts.start, 0);
+  const sleepingBerth = timeline
+    .filter((ts) => ts.type === "sleeper_berth")
+    .reduce((acc, ts) => acc + ts.end - ts.start, 0);
+  const driving = timeline
+    .filter((ts) => ts.type === "driving")
+    .reduce((acc, ts) => acc + ts.end - ts.start, 0);
+  const onDuty = timeline
+    .filter((ts) => ts.type === "on_duty")
+    .reduce((acc, ts) => acc + ts.end - ts.start, 0);
+
+  return [
+    <p
+      className="absolute text-lg text-center"
+      style={{
+        width: (1.5 / 27.5) * 100 + "%",
+        right: 0,
+        top: calcTop("off_duty") + 20 + "%",
+        transform: "translateY(-50%)",
+      }}
+    >
+      {(offDuty / 3600).toFixed(1)}
+    </p>,
+    <p
+      className="absolute text-lg text-center"
+      style={{
+        width: (1.5 / 27.5) * 100 + "%",
+        right: 0,
+        top: calcTop("sleeper_berth") + 20 + "%",
+        transform: "translateY(-50%)",
+      }}
+    >
+      {(sleepingBerth / 3600).toFixed(1)}
+    </p>,
+    <p
+      className="absolute text-lg text-center"
+      style={{
+        width: (1.5 / 27.5) * 100 + "%",
+        right: 0,
+        top: calcTop("driving") + 20 + "%",
+        transform: "translateY(-50%)",
+      }}
+    >
+      {(driving / 3600).toFixed(1)}
+    </p>,
+    <p
+      className="absolute text-lg text-center"
+      style={{
+        width: (1.5 / 27.5) * 100 + "%",
+        right: 0,
+        top: calcTop("on_duty") + 20 + "%",
+        transform: "translateY(-50%)",
+      }}
+    >
+      {(onDuty / 3600).toFixed(1)}
+    </p>,
+  ];
+};
+
 export function ELDSheet({ timeline, date }: ELDSheetProps) {
   return (
     <div>
@@ -82,6 +145,7 @@ export function ELDSheet({ timeline, date }: ELDSheetProps) {
           className="w-full h-full object-contain"
         />
         {drawLines(timeline)}
+        {totalHours(timeline)}
       </div>
     </div>
   );
