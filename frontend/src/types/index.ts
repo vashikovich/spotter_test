@@ -9,17 +9,25 @@ export interface Job {
   dropoffLoc: Coordinate;
 }
 
+export type StopType = "current" | "fueling" | "pickup" | "dropoff" | "rest";
+
 export interface Stop {
   lat: number;
   long: number;
-  type: "current" | "fueling" | "pickup" | "dropoff" | "rest";
+  type: StopType;
   desc: string;
 }
+
+export type TimeSegmentType =
+  | "off_duty"
+  | "sleeper_berth"
+  | "driving"
+  | "on_duty";
 
 export interface TimeSegment {
   start: number;
   end: number;
-  type: "off_duty" | "sleeper_berth" | "driving" | "on_duty";
+  type: TimeSegmentType;
   desc: string;
 }
 
