@@ -37,21 +37,21 @@ export function Map({ currentLoc, pickupLoc, dropoffLoc }: MapProps) {
     const bounds = new mapboxgl.LngLatBounds();
 
     if (currentLoc) {
-        new mapboxgl.Marker({ color: "yellow" })
+        new mapboxgl.Marker({ color: "blue" })
           .setLngLat([currentLoc.long, currentLoc.lat])
           .addTo(mapRef.current);
         bounds.extend([currentLoc.long, currentLoc.lat]);
       }
 
     if (pickupLoc) {
-      new mapboxgl.Marker({ color: "green" })
+      new mapboxgl.Marker({ color: "red" })
         .setLngLat([pickupLoc.long, pickupLoc.lat])
         .addTo(mapRef.current);
       bounds.extend([pickupLoc.long, pickupLoc.lat]);
     }
 
     if (dropoffLoc) {
-      new mapboxgl.Marker({ color: "red" })
+      new mapboxgl.Marker({ color: "green" })
         .setLngLat([dropoffLoc.long, dropoffLoc.lat])
         .addTo(mapRef.current);
       bounds.extend([dropoffLoc.long, dropoffLoc.lat]);
@@ -64,7 +64,7 @@ export function Map({ currentLoc, pickupLoc, dropoffLoc }: MapProps) {
         maxZoom: 15,
       });
     }
-  }, [pickupLoc, dropoffLoc]);
+  }, [pickupLoc, dropoffLoc, currentLoc]);
 
   return <div ref={mapContainerRef} className="w-full h-full overflow-hidden" />;
 }

@@ -17,11 +17,11 @@ export function JobCard({ job, isSelected, onClick }: JobCardProps) {
       <h3 className="text-xs font-semibold text-gray-400">Job #{job.id}</h3>
       <div className="flex justify-between mb-2">
         <div>
-          <h3 className="text-sm font-semibold">Pickup</h3>
+          <h3 className="text-sm font-semibold text-red-800">Pickup</h3>
           <p className="text-lg">{job.pickupName}</p>
         </div>
         <div>
-          <h3 className="text-sm font-semibold">Dropoff</h3>
+          <h3 className="text-sm font-semibold text-green-800">Dropoff</h3>
           <p className="text-lg">{job.dropoffName}</p>
         </div>
       </div>
