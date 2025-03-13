@@ -1,16 +1,11 @@
 import { createContext, useState, useEffect, PropsWithChildren } from "react";
 import { Job } from "../types";
+import { RandomizeCoord } from "../lib/utils";
 
 const generateRandomJobs = (): Job => ({
   id: Math.random().toString(36).substr(2, 9),
-  pickupLoc: {
-    lat: 38 + (Math.random() * 10 - 5), // US lat range ~33-43
-    long: -98 + (Math.random() * 40 - 20), // US long range ~-118 to -78
-  },
-  dropoffLoc: {
-    lat: 38 + (Math.random() * 10 - 5),
-    long: -98 + (Math.random() * 40 - 20),
-  },
+  pickupLoc: RandomizeCoord(),
+  dropoffLoc: RandomizeCoord(),
 });
 
 export const JobContext = createContext<{

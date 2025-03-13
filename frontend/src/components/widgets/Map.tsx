@@ -54,8 +54,8 @@ export function Map({ markers, route }: MapProps) {
       bounds.extend([marker.long, marker.lat]);
     }
 
-    // Only fit bounds if we have at least one marker
-    if (existingMarkers.length) {
+    // Only fit bounds if we have at least two marker
+    if (existingMarkers.length > 1) {
       mapRef.current.fitBounds(bounds, {
         padding: 50,
         maxZoom: 15,

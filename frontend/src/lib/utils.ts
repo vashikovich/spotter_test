@@ -11,6 +11,13 @@ export function latlong(coord: Coordinate) {
   return `${coord.lat.toFixed(3)},${coord.long.toFixed(3)}`;
 }
 
+export function RandomizeCoord() {
+  return {
+    lat: 38 + (Math.random() * 10 - 5), // US lat range ~33-43
+    long: -98 + (Math.random() * 40 - 20), // US long range ~-118 to -78
+  };
+}
+
 export function fragmentTimeline(timeline: TimeSegment[]) {
   const DAY_SECONDS = 24 * 60 * 60;
 

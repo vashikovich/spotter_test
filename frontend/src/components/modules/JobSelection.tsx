@@ -6,18 +6,20 @@ import { Button } from "../ui/button";
 import { UsedHrsInput } from "../widgets/UsedHrsInput";
 import { MainContext } from "../../context/MainContext";
 import { Marker } from "../../types";
+import { Label } from "@radix-ui/react-label";
+import { latlong, RandomizeCoord } from "../../lib/utils";
 
-const current = { lat: 37.7749, long: -122.4194 };
+const current = RandomizeCoord();
 
 export function JobSelection() {
   const { selectedJob, jobs, usedHrs } = useContext(JobContext);
   const { dispatch } = useContext(MainContext);
 
   const markers: Marker[] = useMemo(() => {
-    if (!selectedJob) return [];
+    if (!selectedJob) return [{ ...current, color: "blue" }];
     else {
       return [
-        { ...current, color: "blue" }, //currentLoc
+        { ...current, color: "blue" },
         { ...selectedJob.pickupLoc, color: "red" },
         { ...selectedJob.dropoffLoc, color: "green" },
       ];
@@ -33,6 +35,12 @@ export function JobSelection() {
       </div>
       <div className="w-2/5 flex flex-col gap-4">
         <UsedHrsInput />
+        <div className="flex items-center">
+          <Label className="text-xl flex-1 font-semibold text-blue-800">
+            Current
+          </Label>
+          <p>{latlong(current)}</p>
+        </div>
         <JobList />
         <Button
           size="lg"
