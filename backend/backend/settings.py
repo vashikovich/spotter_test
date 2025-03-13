@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-#1^$ciw4$ynp-nfs^%-^#2_)e(1sctwij5241lw*dba6rcwfv!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['indera-spotter-test-fe.vercel.app']
+ALLOWED_HOSTS = ['localhost', 'indera-spotter-test-fe.vercel.app']
 
 
 # Application definition
