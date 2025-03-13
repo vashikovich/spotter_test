@@ -19,7 +19,7 @@ export interface Stop {
 export interface TimeSegment {
   start: number;
   end: number;
-  type: string;
+  type: "off_duty" | "sleeper_berth" | "driving" | "on_duty";
   desc: string;
 }
 

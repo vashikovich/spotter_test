@@ -2,10 +2,10 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { MainContext } from "../../context/MainContext";
 import { fetchRoutingDetails } from "../../services/routingService";
 import { Marker, Routing, Stop } from "../../types";
-import { latlong, mock } from "../../lib/utils";
+import { latlong } from "../../lib/utils";
 import { Map } from "../widgets/Map";
 import { StopList } from "../widgets/StopList";
-import { ELD } from "../widgets/ELD";
+import { ELDEstimate } from "../widgets/ELDEstimate";
 
 const getStopColor = (stop: Stop) => {
   switch (stop.type) {
@@ -87,7 +87,7 @@ export function RoutingDetails() {
 
       {/* ELD */}
       <div>
-        <ELD />
+        <ELDEstimate timeline={routingDetails.timeline} />
       </div>
     </div>
   );
