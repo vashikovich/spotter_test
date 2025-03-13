@@ -1,10 +1,14 @@
 import axios from "axios";
 import qs from "querystring";
+import { useQuery } from "@tanstack/react-query";
 import { RoutingQuery } from "../context/MainContext";
+import { Routing } from "../types";
 
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
-export async function fetchRoutingDetails(routingQuery: RoutingQuery) {
+const fetchRoutingDetails = async (
+  routingQuery: RoutingQuery
+): Promise<Routing> => {
   const { job, usedHrs, currentLoc } = routingQuery;
   const query = qs.stringify({
     current: `${currentLoc.lat},${currentLoc.long}`,
@@ -13,11 +17,13 @@ export async function fetchRoutingDetails(routingQuery: RoutingQuery) {
     usedHrs,
   });
 
-  try {
-    const response = await axios.get(`${baseUrl}/api/routing/?${query}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching routing details:", error);
-    throw error;
-  }
-}
+  const response = await axios.get(`${baseUrl}/api/routing/?${query}`);
+  return response.data;
+};
+
+export const useRoutingDetails = (routingQuery: RoutingQuery) => {
+  return useQuery({
+    queryKey: ["routingDetails", routingQuery],
+    queryFn: () => fetchRoutingDetails(routingQuery),
+  });
+};

@@ -1,11 +1,13 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { MainContext } from "../../context/MainContext";
-import { fetchRoutingDetails } from "../../services/routingService";
-import { Marker, Routing, Stop } from "../../types";
+import { Marker, Stop } from "../../types";
 import { latlong } from "../../lib/utils";
 import { Map } from "../widgets/Map";
 import { StopList } from "../widgets/StopList";
 import { ELDEstimate } from "../widgets/ELDEstimate";
+import { useRoutingDetails } from "../../services/routingService";
+import { Error } from "../widgets/Error";
+import { Loading } from "../widgets/Loading";
 
 const getStopColor = (stop: Stop) => {
   switch (stop.type) {
@@ -23,71 +25,70 @@ const getStopColor = (stop: Stop) => {
 };
 
 export function RoutingDetails() {
-  const { routingQuery } = useContext(MainContext).state;
-  const [loading, setLoading] = useState(true);
-  const [routingDetails, setRoutingDetails] = useState<Routing | null>(null);
+  const {
+    state: { routingQuery },
+    dispatch,
+  } = useContext(MainContext);
   const [hovered, setHovered] = useState("");
+
+  const {
+    data: routing,
+    error,
+    isLoading,
+    refetch,
+  } = useRoutingDetails(routingQuery!);
 
   const markers: Marker[] = useMemo(
     () =>
-      routingDetails?.stops.map((stop) => ({
+      routing?.stops.map((stop) => ({
         lat: stop.lat,
         long: stop.long,
         color: getStopColor(stop),
         isLarge: latlong(stop) === hovered,
       })) ?? [],
-    [routingDetails?.stops, hovered]
+    [routing?.stops, hovered]
   );
 
-  useEffect(() => {
-    if (!routingQuery) return;
-
-    const loadRoutingDetails = async () => {
-      try {
-        const data = await fetchRoutingDetails(routingQuery);
-        setRoutingDetails(data);
-      } catch (error) {
-        console.error("Error loading routing details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadRoutingDetails();
-  }, [routingQuery]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <Loading />;
   }
 
-  if (!routingDetails) {
-    return <div>error</div>;
+  if (error || !routing) {
+    return (
+      <Error
+        error={error}
+        retry={refetch}
+        goBack={() => dispatch({ type: "GO_TO_JOB_SELECTION" })}
+      />
+    );
   }
 
   return (
     <div className="flex flex-col w-full gap-4">
       {/* Callout Bar */}
-      <div className="w-full bg-yellow-100 p-4 rounded-lg">
-        <p>
-          Total on-duty duration for this trip may exceed 70 hours/8 days limit. Please check
-          your past logs to avoid violation.
-        </p>
-      </div>
+      {routing.limitWarning && (
+        <div className="w-full bg-yellow-100 p-4 rounded-lg">
+          <p>
+            Total on-duty duration for this trip may exceed 70 hours/8 days
+            limit. Please check your past logs to avoid violation.
+          </p>
+        </div>
+      )}
 
       {/* Map and Stops Container */}
       <div className="flex gap-4 h-[450px]">
         {/* Map Section */}
         <div className="flex-1 bg-gray-100 rounded-lg">
-          <Map markers={markers} route={routingDetails.route} />
+          <Map markers={markers} route={routing.route} />
         </div>
 
         {/* Stops List */}
-        <StopList stops={routingDetails.stops} setHovered={setHovered} />
+        <StopList stops={routing.stops} setHovered={setHovered} />
       </div>
 
       {/* ELD */}
       <div>
-        <ELDEstimate timeline={routingDetails.timeline} />
+        <ELDEstimate timeline={routing.timeline} />
       </div>
     </div>
   );

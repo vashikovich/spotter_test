@@ -1,8 +1,11 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { JobSelection } from "./components/modules/JobSelection";
 import { RoutingDetails } from "./components/modules/RoutingDetails";
 import { JobProvider } from "./context/JobContext";
 import { MainContext, MainProvider } from "./context/MainContext";
 import { useContext } from "react";
+
+const queryClient = new QueryClient();
 
 function AppContent() {
   const { step } = useContext(MainContext).state;
@@ -22,9 +25,11 @@ function AppContent() {
 
 function App() {
   return (
-    <MainProvider>
-      <AppContent />
-    </MainProvider>
+    <QueryClientProvider client={queryClient}>
+      <MainProvider>
+        <AppContent />
+      </MainProvider>
+    </QueryClientProvider>
   );
 }
 
