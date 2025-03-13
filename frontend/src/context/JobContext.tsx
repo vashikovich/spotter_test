@@ -1,10 +1,8 @@
 import { createContext, useState, useEffect, PropsWithChildren } from "react";
-import { Job } from "../types/Location";
+import { Job } from "../types";
 
 const generateRandomJobs = (): Job => ({
   id: Math.random().toString(36).substr(2, 9),
-  pickupName: `Pickup ${Math.floor(Math.random() * 100)}`,
-  dropoffName: `Dropoff ${Math.floor(Math.random() * 100)}`,
   pickupLoc: {
     lat: 38 + (Math.random() * 10 - 5), // US lat range ~33-43
     long: -98 + (Math.random() * 40 - 20), // US long range ~-118 to -78

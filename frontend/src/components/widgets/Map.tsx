@@ -1,18 +1,20 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import mapboxgl, { Map as MapBox } from "mapbox-gl";
-import { Coordinate } from "../../types/Location";
+import { Marker, Coordinate } from "../../types";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 interface MapProps {
-  currentLoc: Coordinate;
-  pickupLoc?: Coordinate;
-  dropoffLoc?: Coordinate;
+  markers?: Marker[];
+  route?: Coordinate[]; // Add route prop
 }
 
-export function Map({ currentLoc, pickupLoc, dropoffLoc }: MapProps) {
+export function Map({ markers, route }: MapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapBox | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  const handleLoad = useCallback(() => setLoaded(true), []);
 
   useEffect(() => {
     mapRef.current = new mapboxgl.Map({
@@ -21,50 +23,86 @@ export function Map({ currentLoc, pickupLoc, dropoffLoc }: MapProps) {
       center: [-98.5795, 39.8283], // Geographical center of the USA (approximate)
       zoom: 3,
     });
+    mapRef.current.on("load", handleLoad);
 
-    return () => mapRef.current?.remove();
-  }, []);
+    return () => {
+      mapRef.current?.off("load", handleLoad);
+      mapRef.current?.remove();
+    };
+  }, [handleLoad]);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !loaded) return;
 
     // Remove existing markers
-    const markers = document.getElementsByClassName("mapboxgl-marker");
-    while (markers.length > 0) {
-      markers[0].remove();
+    const existingMarkers = document.getElementsByClassName("mapboxgl-marker");
+    while (existingMarkers.length > 0) {
+      existingMarkers[0].remove();
     }
+
+    if (!markers?.length) return;
 
     const bounds = new mapboxgl.LngLatBounds();
 
-    if (currentLoc) {
-        new mapboxgl.Marker({ color: "blue" })
-          .setLngLat([currentLoc.long, currentLoc.lat])
-          .addTo(mapRef.current);
-        bounds.extend([currentLoc.long, currentLoc.lat]);
-      }
-
-    if (pickupLoc) {
-      new mapboxgl.Marker({ color: "red" })
-        .setLngLat([pickupLoc.long, pickupLoc.lat])
+    for (const marker of markers) {
+      new mapboxgl.Marker({
+        color: marker.color,
+        scale: marker.isLarge ? 1.5 : 1,
+      })
+        .setLngLat([marker.long, marker.lat])
         .addTo(mapRef.current);
-      bounds.extend([pickupLoc.long, pickupLoc.lat]);
-    }
-
-    if (dropoffLoc) {
-      new mapboxgl.Marker({ color: "green" })
-        .setLngLat([dropoffLoc.long, dropoffLoc.lat])
-        .addTo(mapRef.current);
-      bounds.extend([dropoffLoc.long, dropoffLoc.lat]);
+      bounds.extend([marker.long, marker.lat]);
     }
 
     // Only fit bounds if we have at least one marker
-    if (pickupLoc || dropoffLoc) {
+    if (existingMarkers.length) {
       mapRef.current.fitBounds(bounds, {
         padding: 50,
         maxZoom: 15,
       });
     }
-  }, [pickupLoc, dropoffLoc, currentLoc]);
+  }, [markers, loaded]);
 
-  return <div ref={mapContainerRef} className="w-full h-full overflow-hidden" />;
+  useEffect(() => {
+    if (!mapRef.current || !loaded || !route?.length) return;
+
+    const routeCoordinates = route.map((coord) => [coord.long, coord.lat]);
+    const routeGeoJSON: GeoJSON.GeoJSON = {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: routeCoordinates,
+      },
+      properties: {},
+    };
+
+    if (mapRef.current.getSource("route")) {
+      (mapRef.current.getSource("route") as mapboxgl.GeoJSONSource).setData(
+        routeGeoJSON
+      );
+    } else {
+      mapRef.current.addSource("route", {
+        type: "geojson",
+        data: routeGeoJSON,
+      });
+
+      mapRef.current.addLayer({
+        id: "route",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "blue",
+          "line-width": 6,
+        },
+      });
+    }
+  }, [loaded, route]);
+
+  return (
+    <div ref={mapContainerRef} className="w-full h-full overflow-hidden" />
+  );
 }

@@ -17,7 +17,7 @@ class RouteRequestSerializer(serializers.Serializer):
 
 def validate_location(location_str):
     try:
-        long, lat = map(float, location_str.split(','))
+        lat, long = map(float, location_str.split(','))
     except ValueError:
         raise serializers.ValidationError("Invalid location format. Expected 'lat,long'")
 

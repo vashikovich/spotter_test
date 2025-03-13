@@ -88,6 +88,7 @@ def process_route(route_data: Dict):
                     "type": "off_duty",
                     "desc": "Short rest after fueling"
                 })
+                stops[-1]["desc"] = "Fuel stop and short rest"
                 current_time += REST_WHILE_FUELING_DURATION
                 driving_time_for_rest = 0
             
@@ -163,7 +164,9 @@ def process_route(route_data: Dict):
             current_time += REST_DURATION
 
     return {
-        "route": route_data,
+        "totalDuration": route_data["total_duration"],
+        "totalDistance": route_data["total_distance"],
+        "route": route_data["coordinates"],
         "stops": stops,
         "timeline": timeline
     }
